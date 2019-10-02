@@ -2,6 +2,7 @@ typedef enum {
 	CONNECTED,
 	PHONE_RSSI,
 	PUMP_RSSI,
+	NIGHTSCOUT,
 	COMMAND_TIME,
 	SHOW_STATUS,
 } display_op_t;
