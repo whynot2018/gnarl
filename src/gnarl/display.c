@@ -25,6 +25,7 @@ static QueueHandle_t display_queue;
 static int connected = false;
 static int phone_rssi;
 static int pump_rssi;
+static int nightscout;
 static int command_time;  // seconds
 
 #define DISPLAY_TIMEOUT	5  // seconds
@@ -56,6 +57,10 @@ static void update(display_command_t cmd) {
 		pump_rssi = cmd.arg;
 		ESP_LOGD(TAG, "pump RSSI = %d", pump_rssi);
 		return;
+	case NIGHTSCOUT:
+		nightscout = cmd.arg;
+		ESP_LOGD(TAG, "Last BG = %d", nightscout);
+		return;
 	case COMMAND_TIME:
 		command_time = cmd.arg;
 		ESP_LOGD(TAG, "command time = %d", command_time);
@@ -75,22 +80,27 @@ static void update(display_command_t cmd) {
 
 	oled_font_small();
 	oled_align_left();
-        oled_draw_string(5, 32, "Last command:");
-        oled_draw_string(5, 46, "Phone RSSI:");
-        oled_draw_string(5, 60, "Pump  RSSI:");
+        oled_draw_string(5, 26, "Last command:");
+        oled_draw_string(5, 36, "Phone RSSI:");
+        oled_draw_string(5, 46, "Pump  RSSI:");
+        oled_draw_string(5, 56, "Last BG:");
 
 	oled_align_right();
 	char buf[16];
 	format_time_ago(buf);
-	oled_draw_string(122, 32, buf);
+	oled_draw_string(122, 26, buf);
 	if (connected) {
 		sprintf(buf, "%d", phone_rssi);
-		oled_draw_string(122, 46, buf);
+		oled_draw_string(122, 36, buf);
 		sprintf(buf, "%d", pump_rssi);
-		oled_draw_string(122, 60, buf);
+		oled_draw_string(122, 46, buf);
+		sprintf(buf, "%d", nightscout);
+		oled_draw_string(122, 56, buf);
 	} else {
+		oled_draw_string(122, 36, "--");
 		oled_draw_string(122, 46, "--");
-		oled_draw_string(122, 60, "--");
+		oled_draw_string(122, 56, "--");
+
 	}
 
         oled_update();
