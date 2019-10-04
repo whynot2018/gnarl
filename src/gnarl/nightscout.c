@@ -7,8 +7,6 @@
 #include <cJSON.h>
 
 #define TAG		"NS"
-short nightscout;
-
 #define LOG_LOCAL_LEVEL	ESP_LOG_DEBUG
 #include <esp_log.h>
 #include <esp_tls.h>
@@ -168,6 +166,10 @@ void app_main(void) {
 		puts(resp);
 		return;
 	}
-	//nightscout = (cJSON_GetArrayItem(root, 1));
+	int n = cJSON_GetArraySize(root);
+	ESP_LOGI(TAG, "received JSON array of %d entries", n);
+	for (int i = 0; i < n; i++) {
+		print_entry(cJSON_GetArrayItem(root, i));
+	}
 	cJSON_Delete(root);
 }
